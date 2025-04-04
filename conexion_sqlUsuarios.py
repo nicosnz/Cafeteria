@@ -18,7 +18,7 @@ def conectar_db(usuario,contraseña):
             conn.cursor()
             return conn
         except Exception as e:
-            messagebox.showerror("Error de conexión", f"No se pudo conectar a la BD\n{e}")
+            messagebox.showerror("Error de conexión", "Nombre de Usuario o Contraseña Invalidos")
 
 def cerrar_sesion(master, conn):
     if conn:  # Verifica si la conexión está activa

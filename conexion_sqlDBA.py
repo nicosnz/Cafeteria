@@ -14,7 +14,7 @@ class Funciones:
                 f'DATABASE={database};'
                 f'Trusted_Connection=yes;'
             )
-            print("Conexión exitosa a la base de datos.")
+            
         except pyodbc.Error as e:
             print(f"Error al conectar{e}")
     def cerrar_conexion(self):
@@ -24,11 +24,28 @@ class Funciones:
                 print("Conexión cerrada correctamente.")
         except pyodbc.Error as e:
             print(f"Error al cerrar la conexión: {e}")
+
     def select(self,tabla):
         try:
             cursor=self.conexion.cursor()
             
             consulta = f"SELECT * FROM {tabla} ;"  
+            cursor.execute(consulta)
+
+        
+            resultados = cursor.fetchall()
+            cursor.close()
+            
+            return resultados
+        except pyodbc.Error as e:
+            print(f"Error al ejecutar la consulta: {e}")
+            return None
+    def select_view(self,tabla,columna):
+        try:
+            cursor=self.conexion.cursor()
+            
+            consulta = f"SELECT * FROM {tabla} ORDER BY {columna} DESC;"
+  
             cursor.execute(consulta)
 
         
@@ -114,10 +131,18 @@ class Funciones:
         
         try:
             cursor = self.conexion.cursor()
+            if tabla == "pedidos":
+                consulta=''' EXEC [dbo].[sp_eliminar_pedido] ?'''
+
+                cursor.execute(consulta, (valor))
+                filas_afectadas = cursor.rowcount
+                print(filas_afectadas)
+                if filas_afectadas != 1:
+                    messagebox.showerror("Error","Ha ocurrido un error")
             
-            consulta = f"DELETE FROM {tabla} WHERE {campo} = ?"
-            
-            cursor.execute(consulta, valor)  
+            else:
+                consulta = f"DELETE FROM {tabla} WHERE {campo} = ?"
+                cursor.execute(consulta, valor)  
             self.conexion.commit()
             print(f"Se elimino correctamente de la tabla: {tabla}, el valor: {valor}")
         except pyodbc.Error as e:

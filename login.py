@@ -28,6 +28,8 @@ class Login(Frame):
             if not x:
                 return True
         return False
+    
+    
     def verificar_credenciales(self):
         self.usuario = self.entry_usuario.get()
         self.clave = self.entry_clave.get()
@@ -52,21 +54,20 @@ class Login(Frame):
                 main()
                 return
             
-        else:
-            messagebox.showerror("Error", "Usuario o contraseña incorrectos")
+        
 
     
     
     def objetos(self):
         self.bloque_principal = Frame(self, bg="#F5EDE1")
-        self.bloque_principal.place(x=20, y=20, height=355, width=400)
+        self.bloque_principal.place(x=20, y=20, height=355, width=800)
 
-        Label(self.bloque_principal, text="Usuario:", bg="#F5EDE1").place(x=10, y=50)
+        Label(self.bloque_principal, text="Usuario:", bg="#F5EDE1").place(x=270, y=50)
         self.entry_usuario = Entry(self.bloque_principal)
-        self.entry_usuario.place(x=100, y=50, width=200)
+        self.entry_usuario.place(x=350, y=50, width=200)
 
-        Label(self.bloque_principal, text="Contraseña:", bg="#F5EDE1").place(x=10, y=100)
+        Label(self.bloque_principal, text="Contraseña:", bg="#F5EDE1").place(x=270, y=100)
         self.entry_clave = Entry(self.bloque_principal, show="*")
-        self.entry_clave.place(x=100, y=100, width=200)
+        self.entry_clave.place(x=350, y=100, width=200)
         self.ver = Button(self.bloque_principal, text="INICIAR SESION", bg="#C19A6B", command=self.verificar_credenciales)
-        self.ver.place(x=135, y=150, height=40, width=135)
+        self.ver.place(x=370, y=150, height=40, width=135)

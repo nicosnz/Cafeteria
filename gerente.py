@@ -52,10 +52,10 @@ class Interfaz(Frame):
         entrys[0].focus()
 
     #metodos de las interfaces
-    def ver_tabla(self,tabla):
+    def ver_tabla(self,tabla,columna):
         columnas=self.funciones.describe(tabla)
         
-        datos_tabla_seleccionada=self.funciones.select(tabla)
+        datos_tabla_seleccionada=self.funciones.select_view(tabla,columna)
         
         self.vista_database['columns']=columnas
         for x in columnas:
@@ -86,14 +86,17 @@ class Interfaz(Frame):
     def objetos(self):
         #listas de comandos
         self.comandos_ver = [
-            ("MEJORES CLIENTES", lambda: self.ver_tabla('vista_mejoresclientes')),
-            ("MEJORES PRODUCTOS", lambda: self.ver_tabla('vista_mejoresproductos')),
+            ("CLIENTES COMPRADORES", lambda: self.ver_tabla('vista_mejoresclientes',"CantidadCompras")),
+            ("MEJORES PRODUCTOS", lambda: self.ver_tabla('vista_mejoresproductos',"CantidadCompras")),
+            ("MEJORES CLIENTES", lambda: self.ver_tabla('vista_clientes_mayor_gasto',"TotalGastado")),
+            ("PRODUCTOS BAJO STOCK", lambda: self.ver_tabla('vista_productos_bajo_stock',"Stock")),
+            ("MEJORES VENDEDORES", lambda: self.ver_tabla('vista_mejores_vendedores',"TotalVentas")),
         ]
 
         #creacion de la interfaz principal
         self.bloque_principal=Frame(self,bg="#F5EDE1")
         self.bloque_principal.place(x=20,y=20,height=100,width=150)
-        self.ver=Button(self.bloque_principal,text="VER",bg="#C19A6B",command=lambda:self.ocultar_mostrar(self.bloque_principal,self.interfaz_vista))
+        self.ver=Button(self.bloque_principal,text="REPORTES",bg="#C19A6B",command=lambda:self.ocultar_mostrar(self.bloque_principal,self.interfaz_vista))
         self.ver.place(x=7,y=10,height=80,width=135)
 
         #creacion de las diferentes vistas de las interfaces

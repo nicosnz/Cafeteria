@@ -259,7 +259,7 @@ class Vendedor(Frame):
             ("PRODUCTOS", lambda: self.metodo_agregar('producto')),
             ("DETALLES PEDIDOS", lambda: self.metodo_agregar('detallespedido')),
             ("PEDIDOS", lambda: self.metodo_agregar('pedidos')),
-            ("PAGOS", lambda: self.metodo_agregar('pagos')),
+            ##("PAGOS", lambda: self.metodo_agregar('pagos')),
         ]
 
         self.comandos_modificar = [
