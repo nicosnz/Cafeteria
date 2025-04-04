@@ -137,8 +137,6 @@ class Funciones:
                 cursor.execute(consulta, (valor))
                 filas_afectadas = cursor.rowcount
                 print(filas_afectadas)
-                if filas_afectadas != 1:
-                    messagebox.showerror("Error","Ha ocurrido un error")
             
             else:
                 consulta = f"DELETE FROM {tabla} WHERE {campo} = ?"
