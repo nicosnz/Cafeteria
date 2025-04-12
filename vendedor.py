@@ -26,7 +26,10 @@ class Vendedor(Frame):
             if not x:
                 return True
         return False
-    
+    def limpiarIds(self, valorID):
+        if valorID.strip():  
+            id_g = int(valorID.split()[0])
+            return id_g
     #ocultar interfaces
     def ocultar_mostrar(self,bloque_a_ocultar,bloque_a_mostrar):
         if bloque_a_ocultar:
@@ -58,7 +61,12 @@ class Vendedor(Frame):
         
         
         datos_tabla_seleccionada=self.funciones.select(tabla)
-        
+        if tabla == "pedidos":
+            datos_tabla_seleccionada=self.funciones.selectEspecifico(tabla)    
+        elif tabla == "detallespedido":
+            datos_tabla_seleccionada=self.funciones.selectEspecifico1(tabla)    
+        elif tabla == "pagos":
+            datos_tabla_seleccionada=self.funciones.selectEspecifico2(tabla)    
         self.vista_database['columns']=columnas
         for x in columnas:
             self.vista_database.column(x,width=120,anchor=CENTER)
@@ -86,25 +94,107 @@ class Vendedor(Frame):
         
 
         
-        total_columnas=len(self.columnas_agregar)
         
+
+         ##NUEVO
+        datos_tabla_clientes = self.funciones.select("clientes")
+        datos_tabla_pedidos = self.funciones.selectEspecifico("pedidos")
+        datos_tabla_productos = self.funciones.selectProducto("producto")
+        ##NUEVO
+
         self.labels=[]
         self.entrys=[]
+        total_columnas=len(self.columnas_agregar)
+
+
         for i in range(total_columnas):  
                 label = Label(self.Formulario, text="")
                 label.place(x=50, y=10+i*70)  
                 self.labels.append(label)
+                
                  #Crear el Entry
                 entry1 = Entry(self.Formulario,bg="white")
-                entry1.place(x=5, y=37 +i*70, height=20, width=170)
+                entry1.place(x=5, y=37 +i*70, height=24, width=160)
                 self.entrys.append(entry1)
+
+        ##NUEVO
+        empleados_lista = ["6 Nicolas Oly"]
+        
+        clientes_lista = []
+        for cliente in datos_tabla_clientes:
+            nombre_completo = f"{cliente[0]} {cliente[1]} {cliente[2]}"  
+            clientes_lista.append(nombre_completo)
+
+        pedidos_lista = []
+        for pedido in datos_tabla_pedidos:
+            nombre_completo = f"{pedido[0]}"  
+            pedidos_lista.append(nombre_completo)
+
+        productos_lista = []
+        for producto in datos_tabla_productos:
+            nombre_completo = f"{producto[0]} {producto[1]}"  
+            productos_lista.append(nombre_completo)
  
+        if tabla == "pedidos":
+            
+            self.entrada_agregar1 = StringVar()
+            desplegableEntrada = ttk.Combobox(self.Formulario,
+                                              font="Arial 13 ",
+                                              width=16,
+                                              values=clientes_lista,
+                                              state="readonly",
+                                              textvariable=self.entrada_agregar1)
+            desplegableEntrada.place(x=5, y=37)
+            
+            
+            self.entrada_agregar2 = StringVar()
+            desplegableEntrada2 = ttk.Combobox(self.Formulario,
+                                              font="Arial 13 ",
+                                              width=16,
+                                              values=empleados_lista,
+                                              state="readonly",
+                                              textvariable=self.entrada_agregar2)
+            desplegableEntrada2.set(empleados_lista[0])
+            desplegableEntrada2.place(x=5, y=107)
+        
+
+        elif tabla == "detallespedido":
+            self.entrada_agregar3 = StringVar()
+            desplegableEntrada3 = ttk.Combobox(self.Formulario,
+                                              font="Arial 13 ",
+                                              width=16,
+                                              values=pedidos_lista,
+                                              state="readonly",
+                                              textvariable=self.entrada_agregar3)
+            desplegableEntrada3.place(x=5, y=37)
+            
+            self.entrada_agregar4 = StringVar()
+            desplegableEntrada4 = ttk.Combobox(self.Formulario,
+                                              font="Arial 13 ",
+                                              width=16,
+                                              values=productos_lista,
+                                              state="readonly",
+                                              textvariable=self.entrada_agregar4)
+            desplegableEntrada4.place(x=5, y=107)
+            
+        elif tabla == "pagos":
+            self.entrada_agregar5 = StringVar()
+            desplegableEntrada5 = ttk.Combobox(self.Formulario,
+                                              font="Arial 13 ",
+                                              width=17,
+                                              values=pedidos_lista,
+                                              state="readonly",
+                                              textvariable=self.entrada_agregar5)
+            desplegableEntrada5.place(x=5, y=37)
+            
+        ##NUEVO
+       
         
         # Actualizar el texto de los Labels
         for i, label in enumerate(self.labels):
             label.config(text=self.columnas_agregar[i] if i < len(self.columnas_agregar) else "")
             
-        self.guardar = Button(self.Formulario, text="GUARDAR", bg="green",command=self.guardar_agregar)
+        self.guardar = Button(self.Formulario, text="GUARDAR", bg="green",command=lambda:self.guardar_agregar(tabla))
         self.guardar.place(x=5, y=277, height=35, width=80)
         
         self.cancelar_agregar = Button(self.Formulario, text="CANCELAR", bg="#Ff0000", command=lambda:self.limpiar_entrys(self.entrys))
@@ -113,16 +203,47 @@ class Vendedor(Frame):
         self.regresar3 = Button(self.Formulario, text="REGRESAR", bg="#Ff0000", command=lambda:self.ocultar_mostrar(self.Formulario,self.interfaz_agregar))
         self.regresar3.place(x=3, y=315, height=35, width=173)
     
-    def guardar_agregar(self):
+    def guardar_agregar(self,tabla):
         lista_sin_procesar=[]
         lista_procesada=[]
         columnas=self.columnas_agregar
         
-        for i in range(len(self.entrys)):
-            lista_sin_procesar.append(self.entrys[i].get())
-      
-        comprobar_elemento_vacio=self.elemento_vacio(lista_sin_procesar) 
+        if tabla == "pedidos":
+
+                valor_id_cliente = self.entrada_agregar1.get()
+                id_cliente = self.limpiarIds(valor_id_cliente)
+                lista_procesada.append(id_cliente)
+                valor_id_empleado = self.entrada_agregar2.get()
+                id_empleado = self.limpiarIds(valor_id_empleado)
+                lista_procesada.append(id_empleado)
+                for i in range(2,len(self.entrys)):
+                    lista_sin_procesar.append(self.entrys[i].get())
             
+
+            
+        elif tabla == "detallespedido":
+                valor_id_pedidos = self.entrada_agregar3.get()
+                id_pedidos = self.limpiarIds(valor_id_pedidos)
+                lista_procesada.append(id_pedidos)
+
+                valor_id_producto = self.entrada_agregar4.get()
+                id_producto = self.limpiarIds(valor_id_producto)
+                lista_procesada.append(id_producto)
+                for i in range(2,len(self.entrys)):
+                    lista_sin_procesar.append(self.entrys[i].get())
+        elif tabla == "pagos":
+                valor_id_pedido_pago = self.entrada_agregar5.get()
+                id_pedido_pago = self.limpiarIds(valor_id_pedido_pago)
+                lista_procesada.append(id_pedido_pago)
+                for i in range(1,len(self.entrys)):
+                    lista_sin_procesar.append(self.entrys[i].get())
+
+        else: 
+                for i in range(len(self.entrys)):
+                    lista_sin_procesar.append(self.entrys[i].get())
+        
+        comprobar_elemento_vacio=self.elemento_vacio(lista_sin_procesar) 
+                
         if comprobar_elemento_vacio==True:
             messagebox.showwarning("Agregar",'No introdujo ningún valor.')
             return    

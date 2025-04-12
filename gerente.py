@@ -86,6 +86,7 @@ class Interfaz(Frame):
     def objetos(self):
         #listas de comandos
         self.comandos_ver = [
+            ("VENTAS HOY", lambda: self.ver_tabla('VentasHoy',"Monto")),
             ("CLIENTES COMPRADORES", lambda: self.ver_tabla('vista_mejoresclientes',"CantidadCompras")),
             ("MEJORES PRODUCTOS", lambda: self.ver_tabla('vista_mejoresproductos',"CantidadCompras")),
             ("MEJORES CLIENTES", lambda: self.ver_tabla('vista_clientes_mayor_gasto',"TotalGastado")),

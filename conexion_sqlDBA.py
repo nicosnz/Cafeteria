@@ -40,6 +40,90 @@ class Funciones:
         except pyodbc.Error as e:
             print(f"Error al ejecutar la consulta: {e}")
             return None
+    def selectEspecifico(self,tabla):
+        try:
+            cursor=self.conexion.cursor()
+            
+            consulta = f"SELECT * FROM {tabla} WHERE IDEmpleado = 6;"  
+            cursor.execute(consulta)
+
+        
+            resultados = cursor.fetchall()
+            cursor.close()
+            
+            return resultados
+        except pyodbc.Error as e:
+            print(f"Error al ejecutar la consulta: {e}")
+            return None
+    def selectEspecifico1(self,tabla):
+        try:
+            cursor=self.conexion.cursor()
+            
+            consulta = f"""SELECT IDDetallePedido,detallespedido.IDPedido,IDProducto,Cantidad FROM detallespedido
+                            INNER JOIN 
+                            pedidos on detallespedido.IDPedido = pedidos.IDPedido
+                            where IDEmpleado = 6"""  
+            cursor.execute(consulta)
+
+        
+            resultados = cursor.fetchall()
+            cursor.close()
+            
+            return resultados
+        except pyodbc.Error as e:
+            print(f"Error al ejecutar la consulta: {e}")
+            return None
+    def selectEspecifico2(self,tabla):
+        try:
+            cursor=self.conexion.cursor()
+            
+            consulta = f"""
+                            SELECT IDPago, pagos.IDPedido, Monto, FechaPago
+                            FROM pagos
+                            INNER JOIN
+                            pedidos on pagos.IDPedido = pedidos.IDPedido
+                            where IDEmpleado = 6"""
+            cursor.execute(consulta)
+
+        
+            resultados = cursor.fetchall()
+            cursor.close()
+            
+            return resultados
+        except pyodbc.Error as e:
+            print(f"Error al ejecutar la consulta: {e}")
+            return None
+        
+    def selectProducto(self,tabla):
+        try:
+            cursor=self.conexion.cursor()
+            
+            consulta = f"SELECT IDProducto,NombreProducto FROM {tabla} ;"  
+            cursor.execute(consulta)
+
+        
+            resultados = cursor.fetchall()
+            cursor.close()
+            
+            return resultados
+        except pyodbc.Error as e:
+            print(f"Error al ejecutar la consulta: {e}")
+            return None
+    def selectPedido(self,tabla):
+        try:
+            cursor=self.conexion.cursor()
+            
+            consulta = f"SELECT IDPedido FROM {tabla} ;"  
+            cursor.execute(consulta)
+
+        
+            resultados = cursor.fetchall()
+            cursor.close()
+            
+            return resultados
+        except pyodbc.Error as e:
+            print(f"Error al ejecutar la consulta: {e}")
+            return None
     def select_view(self,tabla,columna):
         try:
             cursor=self.conexion.cursor()

@@ -1,0 +1,46 @@
+ALTER PROCEDURE [dbo].[sp_eliminar_pedido]
+    @IDPedido INT
+AS
+BEGIN
+    
+    SET NOCOUNT ON;
+
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+        
+
+       IF @IDPedido < 0
+        BEGIN
+            PRINT 'Error: iID inválido.';
+            ROLLBACK TRANSACTION;
+            RETURN;
+        END
+
+        DELETE FROM pagos
+        WHERE IDPedido = @IDPedido;
+
+        
+        UPDATE p
+        SET p.Stock = p.Stock + dp.Cantidad
+        FROM producto p
+        INNER JOIN detallespedido dp ON p.IDProducto = dp.IDProducto
+        WHERE dp.IDPedido = @IDPedido;
+
+        
+        DELETE FROM detallespedido
+        WHERE IDPedido = @IDPedido;
+
+        
+        DELETE FROM pedidos
+        WHERE IDPedido = @IDPedido;
+
+        COMMIT TRANSACTION;
+        PRINT 'Pedido y detalles eliminados con éxito.';
+    END TRY
+    BEGIN CATCH
+        
+        ROLLBACK TRANSACTION;
+        PRINT ERROR_MESSAGE();
+    END CATCH;
+END;
